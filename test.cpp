@@ -1,89 +1,55 @@
+#include<iostream>
 #include<cstdio>
 #include<cstring>
-#include<cstdlib>
-#include<algorithm>
-#include<queue>
-#include<iostream>
+#include<cmath>
+#define eps 1e-6
 using namespace std;
-const int INF=0x3f3f3f3f;
-const int MAXN=1000000;
-struct node
+int n;
+double f[21],a[21][21];
+double sqr(double x){return x*x;}
+void ini()
 {
-    int v,c;
-    node(int _v=0,int _c=0):v(_v),c(_c){}
-    bool operator<(const node &r)const
-    {
-        return c>r.c;
-    }
-};
-struct Edge
-{
-    int v,cost;
-    Edge(int _v=0,int _cost=0):v(_v),cost(_cost){}
-};
-
-vector<Edge>e[MAXN];
-bool must[MAXN];
-bool vis[MAXN];
-int dist[MAXN];
-int path[100][100];
-void Dijkstra(int n,int start)//点的编号从1开始
-{
-    memset(vis,false,sizeof(vis));
-    for(int i=1;i<=n;i++)dist[i]=INF;
-    priority_queue<node>que;
-    while(!que.empty()) que.pop();
-    dist[start]=0;
-    que.push(node(start,0));
-    node tmp;
-    while(!que.empty())
-    {
-        tmp=que.top();
-        que.pop();
-        int u=tmp.v;
-        if(vis[u])continue;
-        vis[u]=true;
-        for(int i=0;i<e[u].size();i++)
-        {
-            int v=e[tmp.v][i].v;
-            int cost=e[u][i].cost;
-            if(!vis[v]&&dist[v]>dist[u]+cost)
-            {
-                dist[v]=dist[u]+cost;
-                que.push(node(v,dist[v]));
-            }
-        }
-    }
+    scanf("%d",&n);
+    for(int i=1;i<=n;i++)scanf("%lf",&f[i]);
+    for(int i=1;i<=n;i++)
+       for(int j=1;j<=n;j++)
+       {
+           double t;
+           scanf("%lf",&t);
+           a[i][j]=2*(t-f[j]);
+           a[i][n+1]+=sqr(t)-sqr(f[j]);
+       }
 }
-void init()
+bool gauss()
 {
-    for(int i=0;i<100;i++)
-    {
-        for(int j=0;j<100;j++)
-        {
-            path[i][j]=INF;
-        }
-    }
+     int now=1,to;double t;
+     for(int i=1;i<=n;i++)
+     {
+         for(to=now;to<=n;to++)if(fabs(a[to][i])>eps)break;
+         if(to>n)continue;
+         if(to!=now)for(int j=1;j<=n+1;j++)
+            swap(a[to][j],a[now][j]);
+         t=a[now][i];
+         for(int j=1;j<=n+1;j++)a[now][j]/=t;
+         for(int j=1;j<=n;j++)
+             if(j!=now)
+             {
+             t=a[j][i];
+             for(int k=1;k<=n+1;k++)
+                a[j][k]-=t*a[now][k];
+         		}
+         now++;
+     }
+     for(int i=now;i<=n;i++)
+        if(fabs(a[i][n+1])>eps)return 0;
+     return 1;
 }
 int main()
 {
-    init();
-    int id,u,v,cost,s,t;
-    int bian=0;
-    while(scanf("%d%d%d%d",&id,&u,&v,&cost)!=EOF)
-    {
-        e[u].push_back(Edge(v,cost,id+1));
-        bian++;
-    }
-    scanf("%d%d",&s,&t);
-    while(scanf("%d|",&k)!=EOF)
-    {
-        must[k]=true;
-    }
-    for(int i=0;i<NN;i++)
-    {
-        fol(i,)
-    }
-
+    ini();
+    gauss();
+   	for(int i=1;i<=n-1;i++)
+        printf("%.3lf ",a[i][n+1]);
+	printf("%.3lf\n",a[n][n+1]);
     return 0;
 }
