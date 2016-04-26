@@ -1,51 +1,53 @@
-#include<iostream>
-#include<cstdio>
-#include<cstring>
-#include<algorithm>
+#include <iostream>
+#include <cstdio>
+#include <cstring>
 using namespace std;
-const int maxn=1005;
-const int maxe=25007;
-int visit[maxn];
-struct misaka
+const int N = 41000;
+int a[N];       //a[i] 原始数据
+int d[N];       //d[i] 长度为i的递增子序列的最小值
+
+int BinSearch(int key, int* d, int low, int high)
 {
-    int first;
-    int secend;
-}E[maxe];
-bool cmp(misaka a,misaka b)
-{
-    return a.first<b.first;
+    while(low<=high)
+    {
+        int mid = (low+high)>>1;
+        if(key>d[mid] && key<=d[mid+1])
+            return mid;
+        else if(key>d[mid])
+            low = mid+1;
+        else
+            high = mid-1;
+    }
+    return 0;
 }
+
+int LIS(int* a, int n, int* d)
+{
+    int i,j;
+    d[1] = a[1];
+    int len = 1;        //递增子序列长度
+    for(i = 2; i <= n; i++)
+    {
+        if(d[len]<a[i])
+            j = ++len;
+        else
+            j = BinSearch(a[i],d,1,len) + 1;
+        d[j] = a[i];
+    }
+    return len;
+}
+
 int main()
 {
-    int n,e;
-    while(scanf("%d%d",&n,&e)&&n!=0&&e!=0)
-    {
-        memset(visit,0,sizeof(visit));
-        for(int i=0;i<e;i++)
+    int t;
+    int p;
+        scanf("%d",&p);
+        for(int i = 1; i <= p; i++)
+            scanf("%d",&a[i]);
+        int length=LIS(a,p,d);
+        for(int i=1;i<=length;i++)
         {
-            int u,v;
-            scanf("%d%d",&u,&v);
-            if(u>v)
-            {
-                swap(u,v);
-            }
-            E[i].first=u;
-            E[i].secend=v;
+            cout<<d[i]<<" ";
         }
-        sort(E,E+e,cmp);
-        for(int i=e;i>=0;i--)
-        {
-            if(visit[E[i].first]!=1&&visit[E[i].secend]!=1)
-            {
-                visit[E[i].first]=1;
-                visit[E[i].secend]=2;
-            }
-        }
-        for(int i=0;i<n;i++)
-        {
-            if(visit[i]==1) printf("1");
-            else printf("0");
-        }
-    }
     return 0;
 }

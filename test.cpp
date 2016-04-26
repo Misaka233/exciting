@@ -1,33 +1,57 @@
-
-#include <iostream>
-#include <string>
-#include <vector>
+#include<cstdlib>
+#include<cstring>
+#include<iostream>
 using namespace std;
-char str[200];
-int co;
-void fun(int l,int r,char[],int count)
+
+const int MAXN=1000000+10;
+int a[MAXN],b[MAXN];
+//用二分查找的方法找到一个位置，使得num>b[i-1] 并且num<b[i],并用num代替b[i]
+int Search(int num,int low,int high)
 {
-        if(l<0 || r<l) return ;
-        if(l==0&&r==0){
-            cout<<str<<endl;
-            co++;
-        }else{
-            if(l>0){
-                str[count]='(';
-                fun(l-1, r, str, count+1);
-            }
-            if(r>l){
-                str[count]=')';
-                fun(l, r-1, str, count+1);
-            }
-        }
+    int mid;
+    while(low<=high)
+    {
+        mid=(low+high)/2;
+        if(num>=b[mid]) low=mid+1;
+        else high=mid-1;
+    }
+    return low;
 }
+int DP(int n)
+{
+    int i,len,pos;
+    b[1]=a[1];
+    len=1;
+    for(i=2;i<=n;i++)
+    {
+        if(a[i]>=b[len])//如果a[i]比b[]数组中最大还大直接插入到后面即可
+        {
+            len=len+1;
+            b[len]=a[i];
+        }
+        else//用二分的方法在b[]数组中找出第一个比a[i]大的位置并且让a[i]替代这个位置
+        {
+            pos=Search(a[i],1,len);
+            b[pos]=a[i];
+        }
+    }
+    return len;
+}
+
 int main()
 {
-    co=0;
-    int count;
-    cin>>count;
-    char str[count*2];
-    fun(count,count,str,0);
-    cout<<co;
+    int i;
+    char c;
+    for(i=1;;i++)
+    {
+        cin>>a[i];
+        c=cin.get();
+        if(c=='\n') break;
+    }
+    int length=DP(i);
+    for(int j=1;j<=length;j++)
+    {
+        cout<<b[j]<<" ";
+    }
+    return 0;
 }
