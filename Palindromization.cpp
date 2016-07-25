@@ -1,0 +1,90 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main()
+{
+    int wa;
+    string a;
+    cin>>a;
+    int l=a.length();
+    if(1==l%2)
+    {
+        int i=0,j=l-1;
+        while(i<j)
+        {
+            if(a[i]==a[j])
+            {
+                i++;j--;
+            }
+            else
+            {
+                wa=j;
+                j--;
+            }
+        }
+        if((i==l/2)&&(j==l/2-1))
+        {
+            printf("YES\n%d\n",wa+1);
+        }
+        else
+        {
+            i=0;j=l-1;
+            while(i<j)
+            {
+                if(a[i]==a[j])
+                {
+                    i++;j--;
+                }
+                else
+                {
+                    wa=i;
+                    i++;
+                }
+            }
+            if((i==l/2+1)&&(j==l/2))
+            {
+                 printf("YES\n%d\n",wa+1);
+            }
+            else
+                cout<<"NO"<<endl;
+        }
+    }
+    else
+    {
+        int i=0,j=l-1;
+        while(i<j)
+        {
+            if(a[i]==a[j])
+            {
+                i++;j--;
+            }
+            else
+            {
+                wa=i;
+                i++;
+            }
+        }
+        if(i==j&&i==l/2)
+            printf("YES\n%d\n",wa+1);
+        else
+        {
+            i=0;j=l-1;
+            while(i<j)
+            {
+                if(a[i]==a[j])
+                {
+                    i++;j--;
+                }
+                else
+                {
+                    wa=j;
+                    j--;
+                }
+            }
+            if(i==j&&i==l/2-1)
+                printf("YES\n%d\n",wa+1);
+            else
+                cout<<"NO"<<endl;
+        }
+    }
+    return 0;
+}

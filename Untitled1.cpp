@@ -1,33 +1,33 @@
-#include <stdio.h>
-#include <Windows.h>
-#include <Wininet.h>
-
-#pragma comment(lib, "Wininet.lib")
-
-#define URL L"http://www.baidu.com/"
-#define USER_AGENT L"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727)"
-
-bool OpenUrl()
-{
-	HINTERNET hInternet, hInternetUrl;
-	hInternet = InternetOpen(USER_AGENT, INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, NULL);
-	if (!hInternet) {
-		wprintf(L"InternetOpen error: %d\n", GetLastError());
-		return false;
-	}
-	hInternetUrl = InternetOpenUrl(hInternet, URL, NULL, 0, INTERNET_FLAG_HYPERLINK, NULL);
-	if (!hInternetUrl) {
-		wprintf(L"InternetOpenUrl error: %d\n", GetLastError());
-		InternetCloseHandle(hInternet);
-		return false;
-	}
-	InternetCloseHandle(hInternetUrl);
-	InternetCloseHandle(hInternet);
-	return true;
-}
-
+#include<iostream>
+#include<cstdio>
+using namespace std;
+const int MAX = 30000 + 10;
+int a[MAX];
 int main()
 {
-	OpenUrl();
-	return 0;
+    int n;
+    cin >> n;
+    for (int i = 0; i < n-1; i++)
+    {
+        scanf("%d,",&a[i]);
+    }
+    cin>>a[n-1];
+    int b = a[0], len = 1;
+    int flag=1;
+    for (int i=1; i < n; i++)
+    {
+        if (flag&& b > a[i])
+        {
+            flag= 0;
+            len++;
+        }
+        else if(!flag&& b < a[i])
+        {
+            flag= 1;
+            len++;
+        }
+        b = a[i];
+    }
+    cout << len+1<< endl;
 }
+
