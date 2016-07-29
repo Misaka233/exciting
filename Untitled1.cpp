@@ -1,93 +1,62 @@
-#include <cstdio>
-#include <iostream>
-#include <algorithm>
-#include <cmath>
-#include <queue>
-#include <cstdlib>
-#include <cstring>
-#include <vector>
-#include <set>
-#include <map>
+#include<bits/stdc++.h>
 using namespace std;
-#define ll long long
-#define maxn 100005
-vector<int> tree[maxn];
-vector<int> query[maxn];
-int father[maxn];
-int depth[maxn];
-ll ans = 0;
-int findSet(int x)
+
+const int maxn = 207;
+const int maxm = 1007;
+const int inf = 1<<30;
+int n, m, s, t;
+int ans;
+int fa[maxn];
+struct Edge
 {
-	if (x == father[x])
-		return x;
-	else
-		return father[x] = findSet(father[x]);
-}
-void unionSet(int x, int y)
+    int s, e, speed;
+}edge[maxm];
+
+int cmp(Edge a, Edge b)
 {
-	int fx = findSet(x);
-	int fy = findSet(y);
-	if (fy == fx)
-		return;
-	father[fy] = fx;
+    return a.speed < b.speed;
 }
-void bfs()
+
+int find(int x)
 {
-	queue<int> Q;
-	Q.push(1);
-	int last = 0;
-	int t;
-	while (!Q.empty())
-	{
-		t = Q.front();
-		if (last != 0)
-		{
-			query[last].push_back(t);
-		}
-		last = t;
-		Q.pop();
-		for (unsigned int i = 0; i < tree[t].size(); ++i)
-		{
-			Q.push(tree[t][i]);
-		}
-	}
+    while (fa[x] != x) x = fa[x];
+    return x;
 }
-void Tarjan_LCA(int u)
-{
-	father[u] = u;
-	int t;
-	for (unsigned int i = 0; i < tree[u].size(); ++i)
-	{
-		t = tree[u][i];
-		depth[t] = depth[u] + 1;
-		Tarjan_LCA(t);
-		unionSet(u, t);
-	}
-	for (unsigned int i = 0; i < query[u].size(); ++i)
-	{
-		t = query[u][i];
-		if (father[t] != 0)
-		{
-			ans += (ll)depth[u] + (ll)depth[t] - 2 * (ll)depth[findSet(t)];
-		}
-		else
-		{
-			query[t].push_back(u);
-		}
-	}
-}
+
 int main()
 {
-	int n;
-	scanf("%d", &n);
-	int tmp;
-	for (int i = 2; i <= n; ++i)
-	{
-		scanf("%d", &tmp);
-		tree[tmp].push_back(i);
-	}
-	bfs();
-	Tarjan_LCA(1);
-	printf("%lld\n", ans);
-	return 0;
+    while (scanf("%d %d", &n, &m) != EOF)
+    {
+        int i, j;
+        for (i=0; i<m; i++)
+        {
+            scanf("%d %d %d", &edge[i].s, &edge[i].e, &edge[i].speed);
+        }
+        sort(edge, edge+m, cmp);
+        int q;
+        scanf("%d", &q);
+        while (q--)
+        {
+            scanf("%d %d", &s, &t);
+            int mmin = inf;
+            for (i=0; i<m; i++)    //Ã¶¾Ù
+            {
+                for (j=1; j<=n; j++) fa[j] = j;
+                for (j=i; j<m; j++)
+                {
+                    int fx = find(edge[j].s);
+                    int fy = find(edge[j].e);
+                    if (fx != fy) fa[fx] = fy;
+                    if (find(s) == find(t))
+                    {
+                        mmin = min(mmin, edge[j].speed - edge[i].speed);
+                        break;
+                    }
+                }
+            }
+            if (mmin == inf) puts("-1");
+            else printf("%d\n", mmin);
+        }
+    }
+    return 0;
 }
