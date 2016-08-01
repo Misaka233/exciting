@@ -1,68 +1,78 @@
-#include<stdio.h>
-#include<string.h>
-#include<set>
-#include<map>
+/*dp[maxn][maxn]表示前i个按键，以第j个字母结尾
+则方程是dp[i][j]=dp[i-1][i-1]+cost(i,j)
+*/
+#include<iostream>
+#include<cstdio>
 #include<algorithm>
+#include<cstring>
 using namespace std;
-
-#define rep(i,s,t) for(int i=s;i<t;i++)
-typedef unsigned long long ull;
-
-const ull B1=10000007;
-const ull B2=100000007;
-
-multiset<ull>S;
-int n,m,t,p,q,ans;
-char s[1001][1001],a[101][51][51];
-ull tmp[1001][1001],ttmp[1001][1001];
-
-inline ull getHash1(char a[51][51]){
-	ull x,y=0;
-	rep(i,0,p){
-		x=0;
-		rep(j,0,q){
-			x=x*B1+a[i][j];
-		}
-		y=y*B2+x;
-	}
-	return y;
+const int maxn=107;
+int dp[maxn][maxn];//前i个按键，j结尾
+int g[maxn][maxn];
+int a[maxn];
+char keys[maxn],letters[maxn];
+int K,L,s;
+int cost(int l,int r)
+{
+    int sum=0;
+    for(int i=l;i<=r;i++)
+    {
+        sum+=a[i]*(i-l+1);
+    }
+    return sum;
 }
-
-inline void getHash2(char s[1001][1001]){
-	ull t=1;
-	rep(i,0,q) t*=B1;
-	rep(i,0,n){
-		ull a=0;
-		rep(j,0,q) a=a*B1+s[i][j];
-		tmp[i][q-1]=a;
-		rep(j,q,m){
-			tmp[i][j]=tmp[i][j-1]*B1-s[i][j-q]*t+s[i][j];
-		}
-	}
-	t=1;
-	rep(i,0,p) t*=B2;
-	rep(i,q-1,m){
-		ull a=0;
-		rep(j,0,p) a=a*B2+tmp[j][i];
-		ttmp[p-1][i]=a;
-		S.erase(a);
-		rep(j,p,n){
-			ttmp[j][i]=ttmp[j-1][i]*B2-tmp[j-p][i]*t+tmp[j][i];
-			S.erase(ttmp[j][i]);
-		}
-	}
+void print(char s[],int l,int r)
+{
+    for(int i=l;i<=r;i++)
+    {
+        printf("%c",s[i]);
+    }
 }
-int main(){
-	int ca=1;
-	while(scanf("%d%d%d%d%d",&n,&m,&t,&p,&q),n||m||t||p||q){
-		S.clear();
-		rep(i,0,n) scanf("%s",s[i]);
-		rep(i,0,t) rep(j,0,p) scanf("%s",a[i][j]);
-		rep(i,0,t){
-			S.insert(getHash1(a[i]));
-		}
-		ans=0;getHash2(s);
-		printf("Case %d: %d\n",ca++,t-S.size());
-	}
-	return 0;
+void output(int key,int letter)
+{
+    if(key>1) output(key-1,g[key][letter]);
+    printf("%c: ",keys[key-1]);
+    print(letters,g[key][letter],letter-1);
+    cout<<endl;
+}
+int main()
+{
+    int t;
+    cin>>t;
+    for(int cas=1;cas<=t;cas++)
+    {
+        scanf("%d%d",&K,&L);
+        scanf("%s%s",keys,letters);
+        for(int i=1;i<=L;i++)
+            scanf("%d",&a[i]);
+        for(int j=1;j<=L;j++)
+            dp[1][j]=cost(1,j);
+        for(int i=2;i<=K;i++)
+        {
+            for(int j=1;j<=L;j++)
+            {
+                dp[i][j]=dp[i-1][i-1]+cost(i,j);
+                g[i][j]=i-1;
+                for(int n=i;n<j;n++)
+                {
+
+                    s=dp[i-1][n]+cost(n+1,j);
+                    if(dp[i][j]>s)
+                    {
+                        dp[i][j]=s;
+                        g[i][j]=n;
+                    }
+                }
+            }
+        }
+        printf("Keypad #%d:\n",cas);
+        int i,j;
+         for(i=j=1;i<=K;i++)
+        {
+            if(dp[i][L]<dp[j][L]) j=i;
+        }
+        output(K,L);
+        cout<<endl;
+    }
+    return 0;
 }

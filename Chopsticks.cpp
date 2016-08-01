@@ -1,3 +1,4 @@
+/*dp[i][j]表示前i个数中划分j个三元组的最小差值，转移方程见代码*/
 #include<iostream>
 #include<cstdio>
 #include<cstring>
