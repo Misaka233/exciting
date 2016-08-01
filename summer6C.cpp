@@ -1,6 +1,5 @@
 #include<iostream>
-#include<cstdio>
 #include<cstring>
 #include<algorithm>
-#include<cmath>
-
+#include<cstdio>
+using namespace std;
