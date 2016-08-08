@@ -9,6 +9,7 @@ const int inf = 1e9;
 set<int> G[100001];
 set<int> query[100001];
 set<int> res[100001];
+
 int ans[100001];
 
 void dfs(int u, int fa = -1)
