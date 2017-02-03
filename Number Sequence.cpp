@@ -1,76 +1,42 @@
-#include <stdio.h>
-#include <string.h>
-
-int a[1000005],b[10005];
-int next[10005],n,m;
-
-void getnext()
-{
-    int i = 0,j = -1;
-    next[0] = -1;
-    while(i<m)
-    {
-        if(j == -1 || b[i] == b[j])
-        {
-            i++;
-            j++;
-            if(b[i] == b[j])
-            next[i] = next[j];
-            else
-            next[i] = j;
+#include<iostream>
+#include<cstdio>
+using namespace std;
+const int MAXN = 1111111,MAXM = 11111;
+int T[MAXN],P[MAXM],Next[MAXM];
+void MakeNext(int M){
+    Next[0] = -1;
+    int i = 0, j = -1;
+    while(i<M){
+        if(j==-1||P[i]==P[j]){
+            i++,j++;
+            if(P[i]!=P[j])Next[i] = j;
+            else Next[i] = Next[j];
         }
-        else
-        j = next[j];
+        else j = Next[j];
     }
 }
-
-int kmp()
-{
-    int i = 0,j = 0;
-    while(i<n)
-    {
-        if(a[i] == b[j])
-        {
-            if(j == m-1)
-            return i-j+1;
-            i++;
-            j++;
-        }
-        else
-        {
-            j = next[j];
-            if(j == -1)
-            {
-                i++;
-                j = 0;
-            }
-        }
+int KMP(int N,int M){
+    int i=0,j=0;
+    while(i<N&&j<M){
+        if(T[i]==P[j]||j==-1)i++,j++;
+        else j = Next[j];
     }
-    return -1;
+    if(j==M)return i-M+1;
+    else return -1;
 }
-
-int main()
-{
-    int t,i;
-
-    scanf("%d",&t);
-    while(t--)
-    {
-        scanf("%d%d",&n,&m);
-        for(i = 0;i<n;i++)
-        scanf("%d",&a[i]);
-        for(i = 0;i<m;i++)
-        scanf("%d",&b[i]);
-        if(n<m)
-        printf("-1\n");
-        else
-        {
-            getnext();
-            printf("%d\n",kmp());
+int main(){
+    int N,M,C;
+    scanf("%d",&C);
+    while(C--){
+        scanf("%d%d",&N,&M);
+        for(int i=0;i<N;i++)scanf("%d",&T[i]);
+        for(int i=0;i<M;i++)scanf("%d",&P[i]);
+        if(M>N)printf("-1\n");
+        else{
+            MakeNext(M);
+            printf("%d\n",KMP(N,M));
         }
     }
-
     return 0;
 }
-
 
